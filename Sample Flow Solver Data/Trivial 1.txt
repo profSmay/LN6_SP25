@@ -1,0 +1,61 @@
+title, 1 pipe and 1 resistor
+
+distance_unit,  inch  
+force_unit,  lbf 
+time_unit, s
+
+gravity, 386.2,  in/s^2
+roughness, 0.000006, in
+density, 0.00009357,   lbf-s^2/in^4
+viscosity, 0.0000001291,  lbf-s/in^2
+
+nodes, (a,0,0,0), (b,200,0,0), (c,1000,0,0), (d,1200,100,0)
+
+ref_nodes, (a,0), (d,0)
+
+pipes, (b,c,800,0.5),
+
+devices, (sp1,  c, d)
+
+source, a, b
+
+
+# Pump Library  - - using coefficients
+# The following list of pumps are available for use in the system
+#       Two sets of coefficients are given for headloss vs flow and efficiency vs flow
+#	headloss = c0 + c1*q + c2*q^2 + c3*q^3   and   efficiency = d0 + d1*q + d2*q^2 + d3*q^3	
+#	Headloss has units of length.
+#       Note1: the units flow and head must match those specified above
+#
+#           pump ID,  Description, shutoff head, (c0,c1,c2,c3), (d0,d1,d2,d3)
+pump_data,  small,  1/2 hp - 3450 rpm, 82,  76.0575, 0.1443, -0.0341, -0.0002, 0,0,0,0
+pump_data,  med,  1 hp - 3450 rpm, 82,  76.0575, 0.1443, -0.0341, -0.0002, 0,0,0,0
+pump_data,  large,  10 hp - 3450 rpm, 82,  76.0575, 0.1443, -0.0341, -0.0002, 0,0,0,0
+
+# Device Library
+# The following list of flow devices are available for use in the system
+#       the pressure-flow equation for a device is:  deltaP = c1*Q + c2*Q^2 + c3*Q^3
+#       Note1: the units for this equation must match those specified above
+#       Note1: positive deltaP is the pressure DROP from the inlet to the exit
+#           device ID,  Description, c0, c1, c2, c3
+device_data,  sp1,   small sprinkler head,  0, 0.25, 1.38, 2.47
+device_data,  sp2,   large sprinkler head, 0, 0.025, 0.138, 0.247
+device_data,  hose,  2 inch firehose,   0, 0.0025, 0.0138, 0.0247
+
+
+
+# multiply preferred units by the scale factor to get fundamental units
+# unit keyword,        scale factor,  preferred units
+density_scale_factor,    0.0000015 , lbm/ft^3     # convert to  = lbf-s^2 / in^4
+viscosity_scale_factor,   0.006944 , lbf-s/ft^2   # convert to lbf-s/in^2
+roughness_scale_factor,          1 , in           # no conversion
+pipe_length_scale_factor,       12 , feet         # convert to inches
+location_scale_factor,          12 , feet         # convert to inches
+pipe_diameter_scale_factor,      1 , in           # no conversion
+flow_scale_factor,             3.85, gpm          # convert to in^3 / s
+pressure_scale_factor,            1, psig         # no conversion
+gc_scale_factor,                 12, ft/s^2       # convert to in/s^2
+
+
+
+

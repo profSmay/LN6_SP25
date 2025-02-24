@@ -1,0 +1,122 @@
+#    A # character anywhere on a line means that the 
+#    remainder of the line will be ignored by the file reader
+#    Use the # character to put comments in the file
+
+#       blank lines are also allowed and will be ignored
+
+# Other lines in the file are identified by specific KEYWORDS, followed by the expected data
+# KEYWORDS may be written using Capital letters, but capitalization will be ignored
+
+
+# parentheses are visually useful for grouping information, but are NOT required
+# when the file is read, parentheses will be ignored
+
+# each line stands alone, and there is no required ORDER to the file
+
+#----------------------------------------------------------------------
+
+
+title, Jake's Example Flow Problem
+
+# fundamental units - used internally for all calculations
+distance_unit,  inch  
+force_unit,  lbf 
+time_unit, s     
+
+
+# Scale factors and units - to allow data input and output in non-fundamental units
+#      Use scale factors to assure that all input/output data become consistent 
+#         with the fundamental units specified above
+#
+#      All scale factors are multipliers!
+#         meaning:  multiply non-fundamental unit by the scale factor to get a fundamental unit
+#      example from below:  multiply (lbm/ft^3) by 0.0000015 to get (lbf-s^2 / in^4)
+#
+#(scale factor name keyword,  value, non-fundamental units text)
+
+density_scale_factor,    0.0000015 , lbm/ft^3     # convert to  = lbf-s^2 / in^4
+viscosity_scale_factor,   0.006944 , lbf-s/ft^2   # convert to lbf-s/in^2
+roughness_scale_factor,          1 , in           # no conversion
+pipe_length_scale_factor,       12 , feet         # convert to inches
+location_scale_factor,          12 , feet         # convert to inches
+pipe_diameter_scale_factor,      1 , in           # no conversion
+flow_scale_factor,             3.85, gpm          # convert to in^3 / s
+pressure_scale_factor,            1, psi          # no conversion
+
+#           (value, units)
+roughness, 0.00015, in
+density, 1.94,   lbm / ft^3
+viscosity, 0.0000019,  lbf-s/ft^2
+
+
+# Nodes
+#     node data contains (node ID, x(ft), y(ft), z(ft)
+nodes, (a,0,50,0), (b,200,50,0), (e,0,0,0)
+nodes, (f,200,0,0), (d,0,-50,0), (c,200,-50,0)
+nodes, (supply, -100, 0, 0), 
+
+
+# Pipes
+#      pipe data contains:
+#   	positive flow values are directed from beginning to end nodes
+#      (beginning node ID, end node ID, total equivalent length (ft), diameter(in))  
+pipes, (a,b,300,6), (e,a,400,6), (f,b,200,8)
+pipes, (e,d,5,8), (d,c,300,8), (f,c,200,8)
+
+
+# Pump
+# there MUST be at least one pump in the system
+#     Pump ID, inlet node ID,  exit node ID
+pump, small, inlet,  e 
+
+
+# Loops
+# the user must identify a sufficient number of INDEPENDENT flow loops in the system
+loops,  a, b, f, e, a
+loops,  e, f, c, d, e
+
+
+# Known pressures at nodes
+# there MUST be at least 1 known pressure in the system, often at:
+#      a) the pump inlet
+#      b) flow exit points
+#               (node ID, pressure(psi) gauge
+known_pressure, (c,0)
+
+
+# Pump
+# there MUST be one and only one  ?????  pump in the system
+pump, small, d, 
+
+# Pump - (optional)
+#       the supply node serves several purposes:
+#	  a) it provides flow to ensure conservation of mass
+#	  b) it provides the system pressure 
+pump_inlet_node, e
+
+
+# Pump Data
+# The following list of pumps are available for use in the system
+#       the pressure-flow equation for a pump is:  deltaP = c1*Q + c2*Q^2 + c3*Q^3
+#       Note1: the units for this equation must match those specified above
+#       Note1: deltaP is the pressure INCREASE produced by the pump at a given flow
+#           pump ID,  Description, c1, c2, c3
+pump_data,  small,  1/4 hp, 0.25, 1.38, 2.47
+pump_data,  medium, 1 hp, 0.025, 0.138, 0.247
+pump_data,  large,  15 hp, 0.0025, 0.0138, 0.0247
+
+
+# Device Data
+# The following list of flow devices are available for use in the system
+#       the pressure-flow equation for a device is:  deltaP = c1*Q + c2*Q^2 + c3*Q^3
+#       Note1: the units for this equation must match those specified above
+#       Note1: deltaP is the pressure DROP through the device at a given flow
+#           device ID,  Description, c1, c2, c3
+device_data,  sp1,   small sprinkler head,  0.25, 1.38, 2.47
+device_data,  sp2,   large sprinkler head, 0.025, 0.138, 0.247
+device_data,  large, firehose,   0.0025, 0.0138, 0.0247
+
+
+
+
+
